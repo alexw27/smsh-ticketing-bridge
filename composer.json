@@ -6,6 +6,7 @@
     "version": "1.0.0",
     "require": {
         "php": ">=8.4",
+        "ext-openssl": "*",
         "symfony/config": "^7.4 || ^8.0",
         "symfony/dependency-injection": "^7.4 || ^8.0",
         "symfony/framework-bundle": "^7.4 || ^8.0",

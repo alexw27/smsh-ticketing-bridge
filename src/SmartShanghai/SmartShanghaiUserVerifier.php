@@ -21,6 +21,9 @@ final class SmartShanghaiUserVerifier
         $url = $this->buildVerifyUrl($config, $userId);
         $response = $this->httpClient->request('GET', $url, [
             'auth_bearer' => $config->apiToken,
+            'headers' => [
+                'X-Api-Key' => $config->apiToken,
+            ],
             'query' => [
                 'jwt' => $jwt,
             ],
@@ -28,13 +31,22 @@ final class SmartShanghaiUserVerifier
 
         $statusCode = $response->getStatusCode();
         if ($statusCode < 200 || $statusCode >= 300) {
-            throw new \RuntimeException(sprintf('SmartShanghai rejected external user "%s".', $userId));
+            throw new \RuntimeException(sprintf(
+                'SmartShanghai rejected external user "%s" with HTTP %d: %s',
+                $userId,
+                $statusCode,
+                $this->responsePreview($response->getContent(false)),
+            ));
         }
 
         $payload = $response->toArray(false);
         $valid = $payload['valid'] ?? true;
         if ($valid !== true) {
-            throw new \RuntimeException(sprintf('SmartShanghai rejected external user "%s".', $userId));
+            throw new \RuntimeException(sprintf(
+                'SmartShanghai rejected external user "%s": %s',
+                $userId,
+                $this->responsePreview(json_encode($payload, \JSON_THROW_ON_ERROR)),
+            ));
         }
 
         $email = $payload['email'] ?? null;
@@ -52,5 +64,12 @@ final class SmartShanghaiUserVerifier
         }
 
         return $config->apiBaseUrl . $path;
+    }
+
+    private function responsePreview(string $responseBody): string
+    {
+        $responseBody = trim($responseBody);
+
+        return mb_substr($responseBody !== '' ? $responseBody : '[empty response]', 0, 500);
     }
 }

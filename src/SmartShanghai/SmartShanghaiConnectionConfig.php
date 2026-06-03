@@ -13,6 +13,10 @@ final readonly class SmartShanghaiConnectionConfig
         public string $apiBaseUrl,
         public string $apiToken,
         public string $verifyUserPath,
+        public string $publicKey,
+        public string $issuer,
+        public string $audience,
+        public int $clockToleranceSeconds,
     ) {
     }
 
@@ -24,7 +28,11 @@ final readonly class SmartShanghaiConnectionConfig
             loginUrl: trim((string) ($config['login_url'] ?? '')),
             apiBaseUrl: rtrim(trim((string) ($config['api_base_url'] ?? '')), '/'),
             apiToken: trim((string) ($config['api_token'] ?? '')),
-            verifyUserPath: trim((string) ($config['verify_user_path'] ?? '/api/ticketing/users/{user_id}')),
+            verifyUserPath: trim((string) ($config['verify_user_path'] ?? '/ticketing/users/{user_id}')),
+            publicKey: trim((string) ($config['public_key'] ?? '')),
+            issuer: trim((string) ($config['issuer'] ?? 'smartshanghai')),
+            audience: trim((string) ($config['audience'] ?? 'solidsource-ticketing')),
+            clockToleranceSeconds: max(0, (int) ($config['clock_tolerance_seconds'] ?? 60)),
         );
     }
 
@@ -33,6 +41,9 @@ final readonly class SmartShanghaiConnectionConfig
         return $this->loginUrl !== ''
             && $this->apiBaseUrl !== ''
             && $this->apiToken !== ''
-            && $this->verifyUserPath !== '';
+            && $this->verifyUserPath !== ''
+            && $this->publicKey !== ''
+            && $this->issuer !== ''
+            && $this->audience !== '';
     }
 }

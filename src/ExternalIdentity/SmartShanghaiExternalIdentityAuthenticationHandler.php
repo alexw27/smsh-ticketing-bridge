@@ -58,10 +58,25 @@ final class SmartShanghaiExternalIdentityAuthenticationHandler implements Extern
 
         $token = $this->resolveJwt($request);
         try {
-            $userId = $this->jwt->userId($token);
+            $userId = $this->jwt->userId($token, $config);
+        } catch (\InvalidArgumentException $exception) {
+            throw new CustomUserMessageAuthenticationException(
+                'smartshanghai_jwt_verification_failed: ' . $exception->getMessage(),
+                [],
+                0,
+                $exception,
+            );
+        }
+
+        try {
             $verified = $this->userVerifier->verify($config, $userId, $token);
-        } catch (\InvalidArgumentException|\RuntimeException) {
-            throw new CustomUserMessageAuthenticationException('auth.external_identity.unavailable_provider');
+        } catch (\RuntimeException $exception) {
+            throw new CustomUserMessageAuthenticationException(
+                'smartshanghai_user_verification_failed: ' . $exception->getMessage(),
+                [],
+                0,
+                $exception,
+            );
         }
 
         return new ExternalIdentityProfile(
@@ -90,12 +105,21 @@ final class SmartShanghaiExternalIdentityAuthenticationHandler implements Extern
             return $token;
         }
 
+        $payload = $request->getPayload();
+        $payloadToken = $payload->get('jwt') ?? $payload->get('token');
+        if (\is_scalar($payloadToken)) {
+            $token = trim((string) $payloadToken);
+            if ($token !== '') {
+                return $token;
+            }
+        }
+
         $authorization = trim((string) $request->headers->get('Authorization', ''));
         if (preg_match('/^Bearer\s+(.+)$/i', $authorization, $matches) === 1) {
             return trim($matches[1]);
         }
 
-        throw new CustomUserMessageAuthenticationException('auth.external_identity.unavailable_provider');
+        throw new CustomUserMessageAuthenticationException('smartshanghai_jwt_missing: Missing SmartShanghai JWT.');
     }
 
     /**
