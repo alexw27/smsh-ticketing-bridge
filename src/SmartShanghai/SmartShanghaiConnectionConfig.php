@@ -28,7 +28,7 @@ final readonly class SmartShanghaiConnectionConfig
             loginUrl: trim((string) ($config['login_url'] ?? '')),
             apiBaseUrl: rtrim(trim((string) ($config['api_base_url'] ?? '')), '/'),
             apiToken: trim((string) ($config['api_token'] ?? '')),
-            verifyUserPath: trim((string) ($config['verify_user_path'] ?? '/ticketing/users/{user_id}')),
+            verifyUserPath: trim((string) ($config['verify_user_path'] ?? '/api2/ticketing/users/{user_id}')),
             publicKey: trim((string) ($config['public_key'] ?? '')),
             issuer: trim((string) ($config['issuer'] ?? 'smartshanghai')),
             audience: trim((string) ($config['audience'] ?? 'solidsource-ticketing')),

@@ -56,11 +56,12 @@ final class SmartShanghaiIntegrationProvider implements IntegrationProviderInter
             ),
             new IntegrationConfigField(
                 key: 'api_token',
-                label: 'API token',
+                label: 'API key',
                 type: 'password',
                 section: 'credentials',
                 required: true,
                 sensitive: true,
+                helpText: 'Partner API key sent as the key query parameter when verifying users.',
             ),
             new IntegrationConfigField(
                 key: 'public_key',
@@ -101,7 +102,7 @@ final class SmartShanghaiIntegrationProvider implements IntegrationProviderInter
                 type: 'text',
                 section: 'settings',
                 required: false,
-                helpText: 'Optional. Defaults to /ticketing/users/{user_id}.',
+                helpText: 'Optional. Defaults to /api2/ticketing/users/{user_id}.',
             ),
         ];
     }

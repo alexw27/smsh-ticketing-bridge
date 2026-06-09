@@ -65,27 +65,25 @@ Configure these under `System -> API / Integrations -> SmartShanghai`:
 
 - `login_url`: SmartShanghai login URL.
 - `api_base_url`: SmartShanghai API base URL.
-- `api_token`: bearer token used by the ticketing app when calling SmartShanghai.
+- `api_token`: partner API key sent as the `key` query parameter when calling SmartShanghai.
 - `public_key`: SmartShanghai JWT public key in PEM format.
 - `issuer`: expected JWT `iss`, defaults to `smartshanghai`.
 - `audience`: expected JWT `aud`, defaults to `solidsource-ticketing`.
 - `clock_tolerance_seconds`: allowed clock skew for `exp` / `nbf`, defaults to `60`.
-- `verify_user_path`: optional path, defaults to `/ticketing/users/{user_id}`.
+- `verify_user_path`: optional path, defaults to `/api2/ticketing/users/{user_id}`.
 
 ## Verify User API Contract
 
 The bridge currently calls:
 
 ```text
-GET {api_base_url}{verify_user_path}?jwt=<jwt>
-Authorization: Bearer <api_token>
-X-Api-Key: <api_token>
+GET {api_base_url}{verify_user_path}?jwt=<jwt>&key=<api_token>
 ```
 
 Example default URL:
 
 ```text
-GET https://www.smartshanghai.com/api2/ticketing/users/123?jwt=...
+GET https://smsh.solidsource.software/api2/ticketing/users/123?jwt=...&key=...
 ```
 
 Expected successful response:

@@ -20,12 +20,9 @@ final class SmartShanghaiUserVerifier
     {
         $url = $this->buildVerifyUrl($config, $userId);
         $response = $this->httpClient->request('GET', $url, [
-            'auth_bearer' => $config->apiToken,
-            'headers' => [
-                'X-Api-Key' => $config->apiToken,
-            ],
             'query' => [
                 'jwt' => $jwt,
+                'key' => $config->apiToken,
             ],
         ]);
 
