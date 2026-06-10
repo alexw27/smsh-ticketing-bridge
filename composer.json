@@ -3,10 +3,9 @@
     "type": "symfony-bundle",
     "license": "proprietary",
     "description": "SmartShanghai bridge for SolidSource ticketing external identity login.",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "require": {
         "php": ">=8.4",
-        "ext-openssl": "*",
         "symfony/config": "^7.4 || ^8.0",
         "symfony/dependency-injection": "^7.4 || ^8.0",
         "symfony/framework-bundle": "^7.4 || ^8.0",

@@ -58,10 +58,10 @@ final class SmartShanghaiExternalIdentityAuthenticationHandler implements Extern
 
         $token = $this->resolveJwt($request);
         try {
-            $userId = $this->jwt->userId($token, $config);
+            $userId = $this->jwt->userId($token);
         } catch (\InvalidArgumentException $exception) {
             throw new CustomUserMessageAuthenticationException(
-                'smartshanghai_jwt_verification_failed: ' . $exception->getMessage(),
+                'smartshanghai_jwt_decode_failed: ' . $exception->getMessage(),
                 [],
                 0,
                 $exception,
