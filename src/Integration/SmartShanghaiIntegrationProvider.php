@@ -71,6 +71,14 @@ final class SmartShanghaiIntegrationProvider implements IntegrationProviderInter
                 required: false,
                 helpText: 'Optional. Defaults to /api2/ticketing/users/{user_id}. SmartShanghai validates the JWT.',
             ),
+            new IntegrationConfigField(
+                key: 'miniprogram_event_page',
+                label: 'MiniProgram event page path',
+                type: 'text',
+                section: 'settings',
+                required: false,
+                helpText: 'Optional. WeChat MiniProgram page path used when generating event QR codes (e.g. pages/ticketing/event).',
+            ),
         ];
     }
 

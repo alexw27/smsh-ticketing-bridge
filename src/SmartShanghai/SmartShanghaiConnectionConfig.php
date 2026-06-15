@@ -13,6 +13,7 @@ final readonly class SmartShanghaiConnectionConfig
         public string $apiBaseUrl,
         public string $apiToken,
         public string $verifyUserPath,
+        public string $miniprogramEventPage = '',
     ) {
     }
 
@@ -25,6 +26,7 @@ final readonly class SmartShanghaiConnectionConfig
             apiBaseUrl: rtrim(trim((string) ($config['api_base_url'] ?? '')), '/'),
             apiToken: trim((string) ($config['api_token'] ?? '')),
             verifyUserPath: trim((string) ($config['verify_user_path'] ?? '/api2/ticketing/users/{user_id}')),
+            miniprogramEventPage: trim((string) ($config['miniprogram_event_page'] ?? '')),
         );
     }
 
