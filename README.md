@@ -14,17 +14,25 @@ Package name:
 - Admin integration provider: `SmartShanghai`
 - External identity provider button for `/login` and `/register`
 - Authentication handler for `/connect/smartshanghai/check`
-- WeChat Mini Program sales channel publisher (`wechat_miniprogram`) — generates event QR codes via `getwxacodeunlimit` when an event is published
+- WeChat Scanner sales channel publisher (`wechat_scanner`) — generates scanner Mini Program QR codes when an event is published
+- SmartShanghai event listing sync on publish — links SMSH listings via report access token and imports thumbnail
 
-## WeChat Mini Program event QR codes
+## WeChat Scanner event QR codes
 
-On first event publish, the bridge generates a Mini Program QR for the `wechat_miniprogram` sales channel when WeChat credentials are configured.
+On first event publish, the bridge generates a Mini Program QR for the `wechat_scanner` sales channel.
 
-- **Credentials:** enabled WeChat integration (`System → API / Integrations → WeChat`) or WeChat Pay connection — set the **SmartShanghai Mini Program** App ID and App Secret (`miniprogram_app_secret`).
-- **Default page:** `pages/event/event` (override via SmartShanghai integration → **MiniProgram event page path**).
-- **Scene:** numeric ticketing event id (read in the Mini Program from `options.scene` on page load).
+- **Credentials:** enabled WeChat integration with slug `wechat-scanner` (`System → API / Integrations`).
+- **Page:** `pages/scanner/scanner` with scene `id={eventId}`.
 
-Ensure the SmartShanghai Mini Program page handles `options.scene` as the event id.
+## SmartShanghai event listing sync
+
+When an event is published and has a **legacy id** (SmartShanghai event id), the bridge:
+
+1. Creates a promoter report access token (label: `SmartShanghai listing sync`).
+2. Calls `PATCH {api_base_url}/api2/admin/smtk-event-bridge/{legacy_id}?key={api_token}` with `{ "access_token": "<raw token>" }`.
+3. Downloads `data.thumbnail_path` from the response and sets it as the event thumbnail (admin → Media).
+
+Requires an enabled SmartShanghai integration with `api_base_url` and `api_token`. Optional setting **Event bridge API path** (default `/api2/admin/smtk-event-bridge/{event_id}`).
 
 ## Expected SmartShanghai Flow
 
@@ -54,6 +62,7 @@ Configure these under `System -> API / Integrations -> SmartShanghai`:
 - `api_base_url`: SmartShanghai API base URL.
 - `api_token`: partner API key sent as the `key` query parameter on every SmartShanghai API call.
 - `verify_user_path`: optional path, defaults to `/api2/ticketing/users/{user_id}`.
+- `event_bridge_path`: optional path, defaults to `/api2/admin/smtk-event-bridge/{event_id}`.
 
 ## Verify User API Contract
 

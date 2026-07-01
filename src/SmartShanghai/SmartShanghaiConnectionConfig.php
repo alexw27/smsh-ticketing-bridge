@@ -14,6 +14,7 @@ final readonly class SmartShanghaiConnectionConfig
         public string $apiToken,
         public string $verifyUserPath,
         public string $miniprogramEventPage = '',
+        public string $eventBridgePath = '/api2/admin/smtk-event-bridge/{event_id}',
     ) {
     }
 
@@ -27,6 +28,7 @@ final readonly class SmartShanghaiConnectionConfig
             apiToken: trim((string) ($config['api_token'] ?? '')),
             verifyUserPath: trim((string) ($config['verify_user_path'] ?? '/api2/ticketing/users/{user_id}')),
             miniprogramEventPage: trim((string) ($config['miniprogram_event_page'] ?? '')),
+            eventBridgePath: trim((string) ($config['event_bridge_path'] ?? '/api2/admin/smtk-event-bridge/{event_id}')),
         );
     }
 
