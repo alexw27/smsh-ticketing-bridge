@@ -77,7 +77,7 @@ final class SmartShanghaiIntegrationProvider implements IntegrationProviderInter
                 type: 'text',
                 section: 'settings',
                 required: false,
-                helpText: 'Optional. WeChat MiniProgram page path used when generating event QR codes (e.g. pages/ticketing/event).',
+                helpText: 'Optional. WeChat MiniProgram page path used when generating event QR codes (e.g. pages/event/event). Event id is passed via QR scene.',
             ),
         ];
     }

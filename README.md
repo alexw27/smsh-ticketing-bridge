@@ -14,6 +14,17 @@ Package name:
 - Admin integration provider: `SmartShanghai`
 - External identity provider button for `/login` and `/register`
 - Authentication handler for `/connect/smartshanghai/check`
+- WeChat Mini Program sales channel publisher (`wechat_miniprogram`) — generates event QR codes via `getwxacodeunlimit` when an event is published
+
+## WeChat Mini Program event QR codes
+
+On first event publish, the bridge generates a Mini Program QR for the `wechat_miniprogram` sales channel when WeChat credentials are configured.
+
+- **Credentials:** enabled WeChat integration (`System → API / Integrations → WeChat`) or WeChat Pay connection — set the **SmartShanghai Mini Program** App ID and App Secret (`miniprogram_app_secret`).
+- **Default page:** `pages/event/event` (override via SmartShanghai integration → **MiniProgram event page path**).
+- **Scene:** numeric ticketing event id (read in the Mini Program from `options.scene` on page load).
+
+Ensure the SmartShanghai Mini Program page handles `options.scene` as the event id.
 
 ## Expected SmartShanghai Flow
 

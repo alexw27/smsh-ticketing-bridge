@@ -20,7 +20,7 @@ use Smsh\TicketingBridge\SmartShanghaiProviderKey;
 
 final class WeChatMiniProgramPublisher implements SalesChannelPublisherInterface
 {
-    private const DEFAULT_EVENT_PAGE = 'pages/ticketing/event';
+    private const DEFAULT_EVENT_PAGE = 'pages/event/event';
 
     public function __construct(
         private readonly ResolveWeChatMiniProgramCredentials $resolveWeChatMiniProgramCredentials,
@@ -51,7 +51,7 @@ final class WeChatMiniProgramPublisher implements SalesChannelPublisherInterface
         }
 
         $page = $this->resolveEventPagePath();
-        $scene = sprintf('e=%d', $eventId);
+        $scene = (string) $eventId;
 
         try {
             $accessToken = $this->weChatMiniProgramAccessToken->fetch(
@@ -92,7 +92,7 @@ final class WeChatMiniProgramPublisher implements SalesChannelPublisherInterface
                 $publication,
                 EventChannelAssetType::DeepLink,
                 'Mini Program deep link',
-                $page . '?' . $scene,
+                sprintf('%s?id=%d', $page, $eventId),
                 metadata: [
                     'scene' => $scene,
                     'page' => $page,

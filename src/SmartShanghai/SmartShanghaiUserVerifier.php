@@ -19,10 +19,14 @@ final class SmartShanghaiUserVerifier
     public function verify(SmartShanghaiConnectionConfig $config, string $userId, string $jwt): array
     {
         $url = $this->buildVerifyUrl($config, $userId);
+        // Send the partner JWT in Authorization to avoid query-string encoding issues with long tokens.
         $response = $this->httpClient->request('GET', $url, [
             'query' => [
-                'jwt' => $jwt,
                 'key' => $config->apiToken,
+            ],
+            'headers' => [
+                'Authorization' => 'Bearer ' . $jwt,
+                'Accept' => 'application/json',
             ],
         ]);
 
