@@ -35,7 +35,7 @@ final class WeChatMiniProgramPublisher implements SalesChannelPublisherInterface
 
     public function supports(SalesChannel $channel): bool
     {
-        return $channel->getCode() === SalesChannel::CODE_WECHAT_MINIPROGRAM;
+        return $channel->getCode() === SmshTicketingBridgeSalesChannel::CODE_WECHAT_SCANNER;
     }
 
     public function publish(Event $event, EventChannelPublication $publication): PublicationResult
@@ -47,7 +47,9 @@ final class WeChatMiniProgramPublisher implements SalesChannelPublisherInterface
 
         $credentials = ($this->resolveWeChatMiniProgramCredentials)();
         if ($credentials === null) {
-            return PublicationResult::failure('WeChat MiniProgram credentials are not configured.');
+            return PublicationResult::failure(
+                'WeChat scanner MiniProgram credentials are not configured. Enable the wechat-scanner integration with app_id and miniprogram_app_secret.',
+            );
         }
 
         $page = $this->resolveEventPagePath();
@@ -61,8 +63,8 @@ final class WeChatMiniProgramPublisher implements SalesChannelPublisherInterface
             $qrBinary = $this->weChatMiniProgramQrCodeGenerator->generate($accessToken, $scene, $page);
             $storedFile = $this->fileStorageManager->storeBinaryContent(
                 $qrBinary,
-                sprintf('event-%d-wechat-miniprogram-qr.png', $eventId),
-                'sales-channel-assets/wechat-miniprogram',
+                sprintf('event-%d-wechat-scanner-qr.png', $eventId),
+                'sales-channel-assets/wechat-scanner',
                 public: true,
                 mimeType: 'image/png',
                 extension: 'png',
