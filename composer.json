@@ -3,7 +3,7 @@
     "type": "symfony-bundle",
     "license": "proprietary",
     "description": "SmartShanghai bridge for SolidSource ticketing external identity login.",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "require": {
         "php": ">=8.4",
         "symfony/config": "^7.4 || ^8.0",

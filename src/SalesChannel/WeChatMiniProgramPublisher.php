@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Smsh\TicketingBridge\SalesChannel;
 
 use App\Core\File\Service\FileStorageManager;
-use App\Core\Integration\Entity\IntegrationConnection;
-use App\Core\Integration\Repository\IntegrationConnectionRepository;
 use App\Core\Routing\PublicUrlGenerator;
 use App\Ticketing\Application\UpsertEventChannelAsset;
 use App\Ticketing\Contract\SalesChannelPublisherInterface;
@@ -15,16 +13,13 @@ use App\Ticketing\Domain\Entity\EventChannelPublication;
 use App\Ticketing\Domain\Entity\SalesChannel;
 use App\Ticketing\Domain\EventChannelAssetType;
 use App\Ticketing\ValueObject\PublicationResult;
-use Smsh\TicketingBridge\SmartShanghai\SmartShanghaiConnectionConfig;
-use Smsh\TicketingBridge\SmartShanghaiProviderKey;
 
 final class WeChatMiniProgramPublisher implements SalesChannelPublisherInterface
 {
-    private const DEFAULT_EVENT_PAGE = 'pages/event/event';
+    private const SCANNER_PAGE = 'pages/scanner/scanner';
 
     public function __construct(
         private readonly ResolveWeChatMiniProgramCredentials $resolveWeChatMiniProgramCredentials,
-        private readonly IntegrationConnectionRepository $integrationConnectionRepository,
         private readonly WeChatMiniProgramAccessToken $weChatMiniProgramAccessToken,
         private readonly WeChatMiniProgramQrCodeGenerator $weChatMiniProgramQrCodeGenerator,
         private readonly FileStorageManager $fileStorageManager,
@@ -52,8 +47,8 @@ final class WeChatMiniProgramPublisher implements SalesChannelPublisherInterface
             );
         }
 
-        $page = $this->resolveEventPagePath();
-        $scene = (string) $eventId;
+        $page = self::SCANNER_PAGE;
+        $scene = sprintf('id=%d', $eventId);
 
         try {
             $accessToken = $this->weChatMiniProgramAccessToken->fetch(
@@ -85,19 +80,9 @@ final class WeChatMiniProgramPublisher implements SalesChannelPublisherInterface
                 [
                     'scene' => $scene,
                     'page' => $page,
+                    'miniprogram_path' => sprintf('%s?id=%d', $page, $eventId),
                     'stored_file_id' => $storedFileId,
                     'credential_source' => $credentials['source'],
-                ],
-            );
-
-            ($this->upsertEventChannelAsset)(
-                $publication,
-                EventChannelAssetType::DeepLink,
-                'Mini Program deep link',
-                sprintf('%s?id=%d', $page, $eventId),
-                metadata: [
-                    'scene' => $scene,
-                    'page' => $page,
                 ],
             );
 
@@ -105,21 +90,5 @@ final class WeChatMiniProgramPublisher implements SalesChannelPublisherInterface
         } catch (WeChatMiniProgramPublisherException $exception) {
             return PublicationResult::failure($exception->getMessage());
         }
-    }
-
-    private function resolveEventPagePath(): string
-    {
-        foreach ($this->integrationConnectionRepository->findEnabledByProvider(SmartShanghaiProviderKey::KEY) as $connection) {
-            if (!$connection instanceof IntegrationConnection) {
-                continue;
-            }
-
-            $page = SmartShanghaiConnectionConfig::fromConnection($connection)->miniprogramEventPage;
-            if ($page !== '') {
-                return $page;
-            }
-        }
-
-        return self::DEFAULT_EVENT_PAGE;
     }
 }
