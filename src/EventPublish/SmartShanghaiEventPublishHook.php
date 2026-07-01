@@ -34,20 +34,15 @@ final class SmartShanghaiEventPublishHook implements EventPublishHookInterface
 
     public function onEventPublished(Event $event): void
     {
-        $legacyId = $event->getLegacyId();
-        if ($legacyId === null || $legacyId <= 0) {
-            $this->logger->info('ticketing.smartshanghai_event_bridge.skipped_no_legacy_id', [
-                'event_id' => $event->getId(),
-            ]);
-
+        $eventId = $event->getId();
+        if ($eventId === null) {
             return;
         }
 
         $config = $this->resolveConnectionConfig();
         if ($config === null) {
             $this->logger->warning('ticketing.smartshanghai_event_bridge.skipped_not_configured', [
-                'event_id' => $event->getId(),
-                'legacy_id' => $legacyId,
+                'event_id' => $eventId,
             ]);
 
             return;
@@ -58,15 +53,15 @@ final class SmartShanghaiEventPublishHook implements EventPublishHookInterface
         try {
             $thumbnailUrl = $this->smartShanghaiEventBridgeClient->linkEvent(
                 $config,
-                $legacyId,
+                $eventId,
                 $tokenResult['rawToken'],
             );
             $this->applyThumbnailFromUrl($event, $thumbnailUrl);
             $this->entityManager->flush();
 
             $this->logger->info('ticketing.smartshanghai_event_bridge.linked', [
-                'event_id' => $event->getId(),
-                'legacy_id' => $legacyId,
+                'event_id' => $eventId,
+                'smtk_id' => $eventId,
                 'thumbnail_url' => $thumbnailUrl,
             ]);
         } catch (SmartShanghaiEventBridgeException $exception) {

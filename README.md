@@ -26,10 +26,10 @@ On first event publish, the bridge generates a Mini Program QR for the `wechat_s
 
 ## SmartShanghai event listing sync
 
-When an event is published and has a **legacy id** (SmartShanghai event id), the bridge:
+When an event is published, the bridge:
 
 1. Creates a promoter report access token (label: `SmartShanghai listing sync`).
-2. Calls `PATCH {api_base_url}/api2/admin/smtk-event-bridge/{legacy_id}?key={api_token}` with `{ "access_token": "<raw token>" }`.
+2. Calls `PATCH {api_base_url}/api2/admin/smtk-event-bridge/{event_id}?key={api_token}` with `{ "access_token": "<raw token>" }` — `{event_id}` is the ticketing event id (same as `smtk_id` on SmartShanghai).
 3. Downloads `data.thumbnail_path` from the response and sets it as the event thumbnail (admin → Media).
 
 Requires an enabled SmartShanghai integration with `api_base_url` and `api_token`. Optional setting **Event bridge API path** (default `/api2/admin/smtk-event-bridge/{event_id}`).

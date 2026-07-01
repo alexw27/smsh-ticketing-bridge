@@ -18,7 +18,7 @@ final class SmartShanghaiEventBridgeClient
      */
     public function linkEvent(
         SmartShanghaiConnectionConfig $config,
-        int $smartShanghaiEventId,
+        int $smtkEventId,
         string $accessToken,
     ): string {
         $accessToken = trim($accessToken);
@@ -26,7 +26,7 @@ final class SmartShanghaiEventBridgeClient
             throw new SmartShanghaiEventBridgeException('Report access token must not be empty.');
         }
 
-        $response = $this->httpClient->request('PATCH', $this->buildUrl($config, $smartShanghaiEventId), [
+        $response = $this->httpClient->request('PATCH', $this->buildUrl($config, $smtkEventId), [
             'query' => [
                 'key' => $config->apiToken,
             ],
@@ -65,9 +65,9 @@ final class SmartShanghaiEventBridgeClient
         return $thumbnailPath;
     }
 
-    private function buildUrl(SmartShanghaiConnectionConfig $config, int $smartShanghaiEventId): string
+    private function buildUrl(SmartShanghaiConnectionConfig $config, int $smtkEventId): string
     {
-        $path = str_replace('{event_id}', (string) $smartShanghaiEventId, $config->eventBridgePath);
+        $path = str_replace('{event_id}', (string) $smtkEventId, $config->eventBridgePath);
         if (!str_starts_with($path, '/')) {
             $path = '/' . $path;
         }
