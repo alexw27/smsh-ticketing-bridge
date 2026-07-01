@@ -65,6 +65,11 @@ final class SmartShanghaiEventPublishHook implements EventPublishHookInterface
                 'thumbnail_url' => $thumbnailUrl,
             ]);
         } catch (SmartShanghaiEventBridgeException $exception) {
+            $this->logger->error('ticketing.smartshanghai_event_bridge.failed', [
+                'event_id' => $eventId,
+                'message' => $exception->getMessage(),
+            ]);
+
             throw $exception;
         }
     }
@@ -93,7 +98,11 @@ final class SmartShanghaiEventPublishHook implements EventPublishHookInterface
 
         try {
             $response = $this->httpClient->request('GET', $thumbnailUrl, [
-                'timeout' => 20,
+                'headers' => [
+                    'Accept' => 'image/*,*/*',
+                ],
+                'max_redirects' => 5,
+                'timeout' => 30,
             ]);
             $statusCode = $response->getStatusCode();
             if ($statusCode < 200 || $statusCode >= 300) {
@@ -104,11 +113,15 @@ final class SmartShanghaiEventPublishHook implements EventPublishHookInterface
             }
 
             $content = $response->getContent(false);
+            $mimeType = strtolower(trim((string) ($response->getHeaders(false)['content-type'][0] ?? '')));
+            if (str_contains($mimeType, ';')) {
+                $mimeType = trim(explode(';', $mimeType, 2)[0]);
+            }
         } catch (SmartShanghaiEventBridgeException $exception) {
             throw $exception;
         } catch (\Throwable $exception) {
             throw new SmartShanghaiEventBridgeException(
-                'Could not download SmartShanghai event thumbnail.',
+                sprintf('Could not download SmartShanghai event thumbnail from %s.', $thumbnailUrl),
                 previous: $exception,
             );
         }
@@ -117,14 +130,14 @@ final class SmartShanghaiEventPublishHook implements EventPublishHookInterface
             throw new SmartShanghaiEventBridgeException('SmartShanghai event thumbnail download returned empty content.');
         }
 
-        $extension = $this->guessExtensionFromUrl($thumbnailUrl);
+        $extension = $this->guessExtensionFromUrl($thumbnailUrl) ?? $this->guessExtensionFromMimeType($mimeType ?? null);
         $eventId = $event->getId();
         $storedFile = $this->fileStorageManager->storeBinaryContent(
             $content,
-            sprintf('event-%d-smsh-thumbnail.%s', $eventId ?? 0, $extension ?? 'jpg'),
+            sprintf('event-%d-smsh-thumbnail.%s', $eventId ?? 0, $extension ?? 'png'),
             'events',
             public: true,
-            mimeType: null,
+            mimeType: ($mimeType ?? '') !== '' ? $mimeType : null,
             extension: $extension,
         );
 
@@ -147,6 +160,21 @@ final class SmartShanghaiEventPublishHook implements EventPublishHookInterface
         return match ($extension) {
             'jpeg' => 'jpg',
             default => $extension,
+        };
+    }
+
+    private function guessExtensionFromMimeType(?string $mimeType): ?string
+    {
+        if ($mimeType === null || $mimeType === '') {
+            return null;
+        }
+
+        return match ($mimeType) {
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+            'image/gif' => 'gif',
+            default => null,
         };
     }
 }

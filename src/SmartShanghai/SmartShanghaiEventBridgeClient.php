@@ -21,15 +21,19 @@ final class SmartShanghaiEventBridgeClient
         int $smtkEventId,
         string $accessToken,
     ): string {
+        $apiToken = trim($config->apiToken);
+        if ($apiToken === '') {
+            throw new SmartShanghaiEventBridgeException(
+                'SmartShanghai API key is not configured. Set API key on System → API / Integrations → SmartShanghai.',
+            );
+        }
+
         $accessToken = trim($accessToken);
         if ($accessToken === '') {
             throw new SmartShanghaiEventBridgeException('Report access token must not be empty.');
         }
 
-        $response = $this->httpClient->request('PATCH', $this->buildUrl($config, $smtkEventId), [
-            'query' => [
-                'key' => $config->apiToken,
-            ],
+        $response = $this->httpClient->request('PATCH', $this->buildUrl($config, $smtkEventId, $apiToken), [
             'headers' => [
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
@@ -42,16 +46,21 @@ final class SmartShanghaiEventBridgeClient
 
         $statusCode = $response->getStatusCode();
         if ($statusCode < 200 || $statusCode >= 300) {
+            $hint = $statusCode === 401
+                ? ' Check the SmartShanghai integration API key (sent as ?key= on the request URL).'
+                : '';
+
             throw new SmartShanghaiEventBridgeException(sprintf(
-                'SmartShanghai event bridge returned HTTP %d: %s',
+                'SmartShanghai event bridge returned HTTP %d: %s.%s',
                 $statusCode,
                 $this->responsePreview($response->getContent(false)),
+                $hint,
             ));
         }
 
         /** @var array<string, mixed> $payload */
         $payload = $response->toArray(false);
-        if (($payload['is_successful'] ?? false) !== true) {
+        if (!$this->isSuccessfulPayload($payload)) {
             $message = trim((string) ($payload['message'] ?? 'SmartShanghai event bridge request failed.'));
 
             throw new SmartShanghaiEventBridgeException($message !== '' ? $message : 'SmartShanghai event bridge request failed.');
@@ -65,14 +74,26 @@ final class SmartShanghaiEventBridgeClient
         return $thumbnailPath;
     }
 
-    private function buildUrl(SmartShanghaiConnectionConfig $config, int $smtkEventId): string
+    private function buildUrl(SmartShanghaiConnectionConfig $config, int $smtkEventId, string $apiToken): string
     {
         $path = str_replace('{event_id}', (string) $smtkEventId, $config->eventBridgePath);
         if (!str_starts_with($path, '/')) {
             $path = '/' . $path;
         }
 
-        return $config->apiBaseUrl . $path;
+        return $config->apiBaseUrl . $path . '?' . http_build_query(['key' => $apiToken]);
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     */
+    private function isSuccessfulPayload(array $payload): bool
+    {
+        if (($payload['is_successful'] ?? false) === true) {
+            return true;
+        }
+
+        return ($payload['isSuccessful'] ?? false) === true;
     }
 
     private function responsePreview(string $responseBody): string
