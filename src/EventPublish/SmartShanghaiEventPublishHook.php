@@ -19,7 +19,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class SmartShanghaiEventPublishHook implements EventPublishHookInterface
 {
-    private const REPORT_ACCESS_LABEL = 'SmartShanghai listing sync';
+    public const REPORT_ACCESS_LABEL = 'SmartShanghai listing sync';
 
     public function __construct(
         private readonly IntegrationConnectionRepository $integrationConnectionRepository,
