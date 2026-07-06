@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Smsh\TicketingBridge\Integration;
 
 use App\Core\Integration\Contract\IntegrationProviderInterface;
+use App\Core\Integration\Contract\OutboundWebhookRequestConfiguratorInterface;
 use App\Core\Integration\Entity\IntegrationConnection;
+use App\Core\Integration\ValueObject\OutboundWebhookRequest;
 use App\Core\Integration\ValueObject\IntegrationConfigField;
 use App\Core\Integration\ValueObject\IntegrationConnectionTestResult;
 use Smsh\TicketingBridge\SmartShanghai\SmartShanghaiConnectionConfig;
 use Smsh\TicketingBridge\SmartShanghaiProviderKey;
 
-final class SmartShanghaiIntegrationProvider implements IntegrationProviderInterface
+final class SmartShanghaiIntegrationProvider implements IntegrationProviderInterface, OutboundWebhookRequestConfiguratorInterface
 {
     public function getProviderKey(): string
     {
@@ -98,5 +100,26 @@ final class SmartShanghaiIntegrationProvider implements IntegrationProviderInter
         }
 
         return IntegrationConnectionTestResult::success('SmartShanghai bridge credentials are configured.');
+    }
+
+    public function configureOutboundWebhookRequest(
+        IntegrationConnection $connection,
+        OutboundWebhookRequest $request,
+    ): OutboundWebhookRequest {
+        $config = SmartShanghaiConnectionConfig::fromConnection($connection);
+        if ($config->apiToken === '') {
+            return $request;
+        }
+
+        $options = $request->options;
+        $query = $options['query'] ?? [];
+        if (!is_array($query)) {
+            $query = [];
+        }
+
+        $query['key'] = $config->apiToken;
+        $options['query'] = $query;
+
+        return $request->withOptions($options);
     }
 }
