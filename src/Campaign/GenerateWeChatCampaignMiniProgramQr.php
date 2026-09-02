@@ -46,10 +46,7 @@ final class GenerateWeChatCampaignMiniProgramQr
         }
 
         $smsConfig = $this->resolveSmartShanghaiConfig();
-        $page = $this->normalizePage($smsConfig?->miniprogramEventPage ?? '');
-        if ($page === '') {
-            $page = CampaignWeChatQrPanelView::DEFAULT_EVENT_PAGE;
-        }
+        $page = CampaignWeChatQrPanelView::DEFAULT_CAMPAIGN_PAGE;
 
         $credentials = ($this->resolveWeChatConsumerMiniProgramCredentials)($smsConfig);
         if ($credentials === null) {
@@ -181,10 +178,5 @@ final class GenerateWeChatCampaignMiniProgramQr
         }
 
         return null;
-    }
-
-    private function normalizePage(string $page): string
-    {
-        return ltrim(trim($page), '/');
     }
 }

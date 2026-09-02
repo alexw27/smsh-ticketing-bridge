@@ -8,8 +8,9 @@ use App\Ticketing\Domain\Entity\EventAffiliate;
 
 /**
  * WeChat getwxacodeunlimit scene: max 32 visible characters.
- * MiniProgram event page reads {@code id} as the event id and {@code ea}
- * as {@code event_affiliate_id} for checkout.
+ * `&` is documented as allowed but WeChat rejects it (`invalid scene`);
+ * use commas between pairs. MiniProgram event page reads {@code id} as the
+ * event id and {@code ea} as {@code event_affiliate_id} for checkout.
  */
 final class EventAffiliateWeChatQrScene
 {
@@ -23,7 +24,7 @@ final class EventAffiliateWeChatQrScene
             return null;
         }
 
-        $scene = sprintf('id=%d&ea=%d', $eventId, $affiliateId);
+        $scene = sprintf('id=%d,ea=%d', $eventId, $affiliateId);
         if (\strlen($scene) > self::MAX_LENGTH) {
             return null;
         }

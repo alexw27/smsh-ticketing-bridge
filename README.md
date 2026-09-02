@@ -30,9 +30,9 @@ On first event publish, the bridge generates a Mini Program QR for the `wechat_s
 
 When a campaign is saved, the bridge generates a Mini Program QR for each targeted event and shows it on the campaign admin form (below the web share QR). Global and venue-only campaigns are skipped until an event (or price-category) target is added.
 
-- **Credentials:** enabled WeChat integration whose slug is `wechat` by default (not `wechat-scanner`). Override with SmartShanghai setting **MiniProgram WeChat connection slug**.
-- **Page:** SmartShanghai setting **MiniProgram event page path**, default `pages/event/event`.
-- **Scene:** `id={eventId}&aci={campaignId}`. MiniProgram checkout sends `aci` as `affiliate_campaign_id`.
+- **Credentials:** WeChat Pay MiniProgram App ID + App Secret by default (same as MiniProgram checkout). Override with SmartShanghai setting **MiniProgram WeChat connection slug**. Do not use `wechat-scanner` unless the QR should open the door MiniProgram.
+- **Page:** `pages/smtkEvent/smtkEvent`.
+- **Scene:** `id={eventId}&aci={campaignId}` (SmartTicket event id and campaign id, e.g. `id=5614&aci=99`). MiniProgram checkout sends `aci` as `affiliate_campaign_id`.
 
 Generation failure is logged and does not block saving the campaign.
 
@@ -40,9 +40,9 @@ Generation failure is logged and does not block saving the campaign.
 
 When an event affiliate is saved, the bridge generates a Mini Program QR and shows it on the affiliate admin form (below the web share QR).
 
-- **Credentials:** same consumer WeChat MiniProgram as campaign QRs (default slug `wechat`).
+- **Credentials:** same consumer WeChat MiniProgram as campaign QRs (WeChat Pay by default).
 - **Page:** SmartShanghai setting **MiniProgram event page path**, default `pages/event/event`.
-- **Scene:** `id={eventId}&ea={affiliateId}`. MiniProgram checkout sends `ea` as `event_affiliate_id`.
+- **Scene:** `id={eventId},ea={affiliateId}` (comma-separated; WeChat `getwxacodeunlimit` rejects `&`). MiniProgram checkout sends `ea` as `event_affiliate_id`.
 
 Generation failure is logged and does not block saving the affiliate.
 
@@ -84,8 +84,8 @@ Configure these under `System -> API / Integrations -> SmartShanghai`:
 - `api_base_url`: SmartShanghai API base URL.
 - `api_token`: partner API key sent as the `key` query parameter on every SmartShanghai API call.
 - `verify_user_path`: optional path, defaults to `/api2/ticketing/users/{user_id}`.
-- `miniprogram_event_page`: optional MiniProgram page path for event and campaign QRs (default `pages/event/event`).
-- `miniprogram_wechat_connection_slug`: optional WeChat integration slug used for campaign QR codes (default `wechat`).
+- `miniprogram_event_page`: optional MiniProgram page path for event-affiliate QRs (default `pages/event/event`). Campaign QRs always use `pages/smtkEvent/smtkEvent`.
+- `miniprogram_wechat_connection_slug`: optional WeChat integration slug for campaign/affiliate QRs. Empty uses WeChat Pay MiniProgram credentials.
 - `event_bridge_path`: optional path, defaults to `/api2/admin/smtk-event-bridge/{event_id}`.
 
 ## Verify User API Contract

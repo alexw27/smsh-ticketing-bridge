@@ -15,7 +15,7 @@ final readonly class SmartShanghaiConnectionConfig
         public string $verifyUserPath,
         public string $miniprogramEventPage = '',
         public string $eventBridgePath = '/api2/admin/smtk-event-bridge/{event_id}',
-        public string $miniprogramWechatConnectionSlug = 'wechat',
+        public string $miniprogramWechatConnectionSlug = '',
     ) {
     }
 
@@ -31,7 +31,7 @@ final readonly class SmartShanghaiConnectionConfig
             miniprogramEventPage: trim((string) ($config['miniprogram_event_page'] ?? '')),
             eventBridgePath: trim((string) ($config['event_bridge_path'] ?? '/api2/admin/smtk-event-bridge/{event_id}')),
             miniprogramWechatConnectionSlug: self::normalizeWechatConnectionSlug(
-                (string) ($config['miniprogram_wechat_connection_slug'] ?? 'wechat'),
+                (string) ($config['miniprogram_wechat_connection_slug'] ?? ''),
             ),
         );
     }
@@ -46,8 +46,6 @@ final readonly class SmartShanghaiConnectionConfig
 
     private static function normalizeWechatConnectionSlug(string $slug): string
     {
-        $slug = strtolower(trim($slug));
-
-        return $slug !== '' ? $slug : 'wechat';
+        return strtolower(trim($slug));
     }
 }

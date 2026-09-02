@@ -13,6 +13,8 @@ final readonly class CampaignWeChatQrPanelView
 
     public const DEFAULT_EVENT_PAGE = 'pages/event/event';
 
+    public const DEFAULT_CAMPAIGN_PAGE = 'pages/smtkEvent/smtkEvent';
+
     /**
      * @param list<CampaignWeChatQrItem> $items
      */

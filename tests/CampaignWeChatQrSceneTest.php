@@ -11,6 +11,7 @@ final class CampaignWeChatQrSceneTest extends TestCase
 {
     public function testEncodesEventIdAndCampaignId(): void
     {
+        self::assertSame('id=5614&aci=99', CampaignWeChatQrScene::fromEventAndCampaign(5614, 99));
         self::assertSame('id=12345&aci=99', CampaignWeChatQrScene::fromEventAndCampaign(12345, 99));
     }
 

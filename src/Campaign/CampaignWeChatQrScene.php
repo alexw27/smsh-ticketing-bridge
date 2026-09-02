@@ -6,8 +6,8 @@ namespace Smsh\TicketingBridge\Campaign;
 
 /**
  * WeChat getwxacodeunlimit scene: max 32 visible characters.
- * MiniProgram event page reads {@code id} as the event id and {@code aci}
- * as {@code affiliate_campaign_id} for checkout.
+ * MiniProgram page {@code pages/smtkEvent/smtkEvent} reads {@code id} as the
+ * SmartTicket event id and {@code aci} as {@code affiliate_campaign_id}.
  */
 final class CampaignWeChatQrScene
 {

@@ -8,3 +8,5 @@ services:
         exclude:
             - '../src/DependencyInjection/'
             - '../src/SmshTicketingBridgeBundle.php'
+
+    # Consumer MiniProgram QRs use WeChat Pay credentials unless a WeChat integration slug is set.
