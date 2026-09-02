@@ -16,6 +16,7 @@ Package name:
 - Authentication handler for `/connect/smartshanghai/check`
 - WeChat Scanner sales channel publisher (`wechat_scanner`) — generates scanner Mini Program QR codes when an event is published
 - WeChat Mini Program QR codes on discount campaigns (admin campaign form)
+- WeChat Mini Program QR codes on event affiliates (admin event → Affiliates)
 - SmartShanghai event listing sync on publish — links SMSH listings via report access token and imports thumbnail
 
 ## WeChat Scanner event QR codes
@@ -34,6 +35,16 @@ When a campaign is saved, the bridge generates a Mini Program QR for each target
 - **Scene:** `id={eventId}&aci={campaignId}`. MiniProgram checkout sends `aci` as `affiliate_campaign_id`.
 
 Generation failure is logged and does not block saving the campaign.
+
+## WeChat event-affiliate Mini Program QR codes
+
+When an event affiliate is saved, the bridge generates a Mini Program QR and shows it on the affiliate admin form (below the web share QR).
+
+- **Credentials:** same consumer WeChat MiniProgram as campaign QRs (default slug `wechat`).
+- **Page:** SmartShanghai setting **MiniProgram event page path**, default `pages/event/event`.
+- **Scene:** `id={eventId}&ea={affiliateId}`. MiniProgram checkout sends `ea` as `event_affiliate_id`.
+
+Generation failure is logged and does not block saving the affiliate.
 
 ## SmartShanghai event listing sync
 

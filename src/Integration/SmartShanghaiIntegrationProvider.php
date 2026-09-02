@@ -79,7 +79,7 @@ final class SmartShanghaiIntegrationProvider implements IntegrationProviderInter
                 type: 'text',
                 section: 'settings',
                 required: false,
-                helpText: 'Optional. WeChat MiniProgram page path for event and campaign QRs (default pages/event/event). Event QRs use scene id={eventId}; campaign QRs use id={eventId}&aci={campaignId}.',
+                helpText: 'Optional. WeChat MiniProgram page path for event, campaign, and event-affiliate QRs (default pages/event/event). Event QRs use scene id={eventId}; campaign QRs use id={eventId}&aci={campaignId}; affiliate QRs use id={eventId}&ea={affiliateId}.',
             ),
             new IntegrationConfigField(
                 key: 'miniprogram_wechat_connection_slug',

@@ -1,0 +1,52 @@
+{% trans_default_domain 'smsh_ticketing_bridge' %}
+
+<div class="card border-0 shadow-sm mb-3">
+    <div class="card-header d-block">
+        <h3 class="card-title mb-0">{{ 'wechat_event_affiliate_qr.card_title'|trans }}</h3>
+    </div>
+    <div class="card-body">
+        <p class="text-body-secondary small mb-3">
+            {{ 'wechat_event_affiliate_qr.card_intro'|trans }}
+        </p>
+
+        {% if wechat_event_affiliate_qr.status == 'ready' %}
+            {% for item in wechat_event_affiliate_qr.items %}
+                <div class="d-flex flex-wrap align-items-start gap-3">
+                    <a href="{{ item.imageUrl }}" target="_blank" rel="noopener noreferrer">
+                        <img
+                            src="{{ item.imageUrl }}"
+                            alt="{{ 'wechat_event_affiliate_qr.img_alt'|trans }}"
+                            class="rounded border bg-white"
+                            width="220"
+                            height="220"
+                            loading="lazy"
+                        >
+                    </a>
+                    <div class="small">
+                        <div class="fw-semibold mb-1">{{ 'wechat_event_affiliate_qr.scene_heading'|trans }}</div>
+                        <code class="text-break">{{ item.scene }}</code>
+                        <div class="fw-semibold mt-3 mb-1">{{ 'wechat_event_affiliate_qr.page_heading'|trans }}</div>
+                        <code class="text-break">{{ item.page }}</code>
+                        <div class="mt-3">
+                            <a href="{{ item.imageUrl }}" target="_blank" rel="noopener noreferrer">
+                                {{ 'wechat_event_affiliate_qr.open_image'|trans }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% elseif wechat_event_affiliate_qr.status == 'not_configured' %}
+            <p class="text-body-secondary mb-0">
+                {% if wechat_event_affiliate_qr.reason == 'credentials' %}
+                    {{ 'wechat_event_affiliate_qr.not_configured_credentials'|trans }}
+                {% else %}
+                    {{ 'wechat_event_affiliate_qr.not_configured'|trans }}
+                {% endif %}
+            </p>
+        {% else %}
+            <p class="text-danger mb-0">
+                {{ 'wechat_event_affiliate_qr.failed'|trans({'%message%': wechat_event_affiliate_qr.errorMessage|default('')}) }}
+            </p>
+        {% endif %}
+    </div>
+</div>
