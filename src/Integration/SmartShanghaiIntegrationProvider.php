@@ -79,7 +79,7 @@ final class SmartShanghaiIntegrationProvider implements IntegrationProviderInter
                 type: 'text',
                 section: 'settings',
                 required: false,
-                helpText: 'Optional. Override the MiniProgram page for event-affiliate QRs (default pages/event/event). Campaign QRs always use pages/smtkEvent/smtkEvent with scene id={eventId}&aci={campaignId}.',
+                helpText: 'Optional. Unused for campaign and event-affiliate QRs; those always open pages/smtkEvent/smtkEvent.',
             ),
             new IntegrationConfigField(
                 key: 'miniprogram_wechat_connection_slug',

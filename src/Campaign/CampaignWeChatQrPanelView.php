@@ -11,7 +11,7 @@ final readonly class CampaignWeChatQrPanelView
     public const STATUS_NOT_CONFIGURED = 'not_configured';
     public const STATUS_FAILED = 'failed';
 
-    public const DEFAULT_EVENT_PAGE = 'pages/event/event';
+    public const DEFAULT_EVENT_PAGE = 'pages/smtkEvent/smtkEvent';
 
     public const DEFAULT_CAMPAIGN_PAGE = 'pages/smtkEvent/smtkEvent';
 

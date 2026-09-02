@@ -41,8 +41,8 @@ Generation failure is logged and does not block saving the campaign.
 When an event affiliate is saved, the bridge generates a Mini Program QR and shows it on the affiliate admin form (below the web share QR).
 
 - **Credentials:** same consumer WeChat MiniProgram as campaign QRs (WeChat Pay by default).
-- **Page:** SmartShanghai setting **MiniProgram event page path**, default `pages/event/event`.
-- **Scene:** `id={eventId},ea={affiliateId}` (comma-separated; WeChat `getwxacodeunlimit` rejects `&`). MiniProgram checkout sends `ea` as `event_affiliate_id`.
+- **Page:** `pages/smtkEvent/smtkEvent`.
+- **Scene:** `id={eventId},ea={affiliateId}` (e.g. `id=5753,ea=14`). WeChat `getwxacodeunlimit` rejects `&` in scene, so pairs are comma-separated. MiniProgram checkout sends `ea` as `event_affiliate_id`.
 
 Generation failure is logged and does not block saving the affiliate.
 
@@ -84,7 +84,7 @@ Configure these under `System -> API / Integrations -> SmartShanghai`:
 - `api_base_url`: SmartShanghai API base URL.
 - `api_token`: partner API key sent as the `key` query parameter on every SmartShanghai API call.
 - `verify_user_path`: optional path, defaults to `/api2/ticketing/users/{user_id}`.
-- `miniprogram_event_page`: optional MiniProgram page path for event-affiliate QRs (default `pages/event/event`). Campaign QRs always use `pages/smtkEvent/smtkEvent`.
+- `miniprogram_event_page`: unused for campaign and event-affiliate QRs (those always use `pages/smtkEvent/smtkEvent`).
 - `miniprogram_wechat_connection_slug`: optional WeChat integration slug for campaign/affiliate QRs. Empty uses WeChat Pay MiniProgram credentials.
 - `event_bridge_path`: optional path, defaults to `/api2/admin/smtk-event-bridge/{event_id}`.
 

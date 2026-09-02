@@ -8,9 +8,9 @@ use App\Ticketing\Domain\Entity\EventAffiliate;
 
 /**
  * WeChat getwxacodeunlimit scene: max 32 visible characters.
- * `&` is documented as allowed but WeChat rejects it (`invalid scene`);
- * use commas between pairs. MiniProgram event page reads {@code id} as the
- * event id and {@code ea} as {@code event_affiliate_id} for checkout.
+ * MiniProgram page {@code pages/smtkEvent/smtkEvent} reads {@code id} as the
+ * SmartTicket event id and {@code ea} as {@code event_affiliate_id}.
+ * WeChat rejects {@code &} in scene ({@code invalid scene}); pairs are comma-separated.
  */
 final class EventAffiliateWeChatQrScene
 {

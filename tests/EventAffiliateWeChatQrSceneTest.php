@@ -13,9 +13,8 @@ final class EventAffiliateWeChatQrSceneTest extends TestCase
 {
     public function testEncodesEventIdAndAffiliateId(): void
     {
-        $affiliate = $this->affiliate(2, 5745);
-
-        self::assertSame('id=5745,ea=2', EventAffiliateWeChatQrScene::fromAffiliate($affiliate));
+        self::assertSame('id=5753,ea=14', EventAffiliateWeChatQrScene::fromAffiliate($this->affiliate(14, 5753)));
+        self::assertSame('id=5745,ea=2', EventAffiliateWeChatQrScene::fromAffiliate($this->affiliate(2, 5745)));
     }
 
     public function testReturnsNullWithoutIds(): void

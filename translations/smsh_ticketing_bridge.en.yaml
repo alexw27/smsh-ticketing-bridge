@@ -15,7 +15,7 @@ wechat_campaign_qr:
 
 wechat_event_affiliate_qr:
   card_title: "WeChat Mini Program QR"
-  card_intro: "Scan this QR in WeChat to open the event Mini Program page with this affiliate attached. Scene is id={eventId},ea={affiliateId} (comma-separated; WeChat rejects &). MiniProgram checkout should send event_affiliate_id."
+  card_intro: "Scan this QR in WeChat to open pages/smtkEvent/smtkEvent with this affiliate attached. Scene is id={eventId},ea={affiliateId} (comma-separated; WeChat rejects &)."
   img_alt: "WeChat Mini Program QR code for this affiliate"
   scene_heading: "Scene"
   page_heading: "Mini Program page"
