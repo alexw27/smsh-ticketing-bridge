@@ -79,7 +79,15 @@ final class SmartShanghaiIntegrationProvider implements IntegrationProviderInter
                 type: 'text',
                 section: 'settings',
                 required: false,
-                helpText: 'Optional. WeChat MiniProgram page path used when generating event QR codes (e.g. pages/event/event). Event id is passed via QR scene.',
+                helpText: 'Optional. WeChat MiniProgram page path for event and campaign QRs (default pages/event/event). Event QRs use scene id={eventId}; campaign QRs use id={eventId}&aci={campaignId}.',
+            ),
+            new IntegrationConfigField(
+                key: 'miniprogram_wechat_connection_slug',
+                label: 'MiniProgram WeChat connection slug',
+                type: 'text',
+                section: 'settings',
+                required: false,
+                helpText: 'API slug of the WeChat MiniProgram integration used for campaign QR codes. Defaults to wechat. Use wechat-scanner only if campaigns should open the door-scanner MiniProgram.',
             ),
             new IntegrationConfigField(
                 key: 'event_bridge_path',

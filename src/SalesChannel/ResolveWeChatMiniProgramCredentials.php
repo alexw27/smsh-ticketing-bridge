@@ -13,7 +13,7 @@ final class ResolveWeChatMiniProgramCredentials
      * SmartShanghai scanner MiniProgram integration (System → API / Integrations).
      * Slug is stable across environments; do not hard-code connection IDs.
      */
-    private const SCANNER_CONNECTION_SLUG = 'wechat-scanner';
+    public const SCANNER_CONNECTION_SLUG = 'wechat-scanner';
 
     public function __construct(
         private readonly IntegrationConnectionRepository $integrationConnectionRepository,
