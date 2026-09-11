@@ -31,6 +31,6 @@ wechat_organization_qr:
   scene_heading: "Scene"
   page_heading: "Mini Program page"
   open_image: "Open image"
-  not_configured: "WeChat organization QR codes are not configured. Configure WeChat Pay MiniProgram credentials (or a WeChat MiniProgram integration)."
-  not_configured_credentials: "Enable a WeChat MiniProgram integration or set MiniProgram App Secret on WeChat Pay (same as MiniProgram checkout). Do not use the wechat-scanner door MiniProgram unless this QR should open that app."
+  not_configured: "WeChat organization QR codes are not configured. Enable the wechat-scanner integration (same MiniProgram as event scanner QR codes)."
+  not_configured_credentials: "Enable the wechat-scanner WeChat MiniProgram integration (System → API / Integrations) with App ID and MiniProgram App Secret. This is the same MiniProgram used for event scanner QR codes."
   failed: "Could not generate the WeChat Mini Program QR: %message%"

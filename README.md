@@ -17,7 +17,7 @@ Package name:
 - WeChat Scanner sales channel publisher (`wechat_scanner`) — generates scanner Mini Program QR codes when an event is published
 - WeChat Mini Program QR codes on discount campaigns (admin campaign form)
 - WeChat Mini Program QR codes on event affiliates (admin event → Affiliates)
-- WeChat Mini Program QR codes on organizations (admin organization form) — join QR for `pages/org/org`
+- WeChat Mini Program QR codes on organizations (admin organization form) — join QR for `pages/org/org` on the scanner MiniProgram (`wechat-scanner`)
 - SmartShanghai event listing sync on publish — links SMSH listings via report access token and imports thumbnail
 - `POST /api/v1/me/organizations` — add the signed-in user to an organization (promoter / scanner membership)
 
@@ -52,7 +52,7 @@ Generation failure is logged and does not block saving the affiliate.
 
 When an organization is opened in admin, the bridge generates a Mini Program QR and shows it on the organization form (below the details form). Scanning it opens the MiniProgram join page so a signed-in user can be added to that organization via `POST /api/v1/me/organizations`.
 
-- **Credentials:** same consumer WeChat MiniProgram as campaign QRs (WeChat Pay by default).
+- **Credentials:** same scanner MiniProgram as event sales-channel QR codes — enabled WeChat integration with slug `wechat-scanner`.
 - **Page:** `pages/org/org`.
 - **Scene:** `id={organizationId}` (e.g. `id=14`).
 

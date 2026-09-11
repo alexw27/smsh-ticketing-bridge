@@ -6,23 +6,19 @@ namespace Smsh\TicketingBridge\Organization;
 
 use App\Core\File\Entity\StoredFile;
 use App\Core\File\Service\FileStorageManager;
-use App\Core\Integration\Repository\IntegrationConnectionRepository;
 use App\Core\Routing\PublicUrlGenerator;
 use App\Organization\Domain\Entity\Organization;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Smsh\TicketingBridge\Campaign\ResolveWeChatConsumerMiniProgramCredentials;
+use Smsh\TicketingBridge\SalesChannel\ResolveWeChatMiniProgramCredentials;
 use Smsh\TicketingBridge\SalesChannel\WeChatMiniProgramAccessToken;
 use Smsh\TicketingBridge\SalesChannel\WeChatMiniProgramPublisherException;
 use Smsh\TicketingBridge\SalesChannel\WeChatMiniProgramQrCodeGenerator;
-use Smsh\TicketingBridge\SmartShanghai\SmartShanghaiConnectionConfig;
-use Smsh\TicketingBridge\SmartShanghaiProviderKey;
 
 final class GenerateWeChatOrganizationMiniProgramQr
 {
     public function __construct(
-        private readonly IntegrationConnectionRepository $integrationConnectionRepository,
-        private readonly ResolveWeChatConsumerMiniProgramCredentials $resolveWeChatConsumerMiniProgramCredentials,
+        private readonly ResolveWeChatMiniProgramCredentials $resolveWeChatMiniProgramCredentials,
         private readonly WeChatMiniProgramAccessToken $weChatMiniProgramAccessToken,
         private readonly WeChatMiniProgramQrCodeGenerator $weChatMiniProgramQrCodeGenerator,
         private readonly FileStorageManager $fileStorageManager,
@@ -45,8 +41,7 @@ final class GenerateWeChatOrganizationMiniProgramQr
         }
 
         $page = OrganizationWeChatQrPanelView::PAGE;
-        $smsConfig = $this->resolveSmartShanghaiConfig();
-        $credentials = ($this->resolveWeChatConsumerMiniProgramCredentials)($smsConfig);
+        $credentials = ($this->resolveWeChatMiniProgramCredentials)();
         if ($credentials === null) {
             return OrganizationWeChatQrPanelView::notConfigured('credentials');
         }
@@ -66,7 +61,7 @@ final class GenerateWeChatOrganizationMiniProgramQr
             $storedFile = $this->fileStorageManager->storeBinaryContent(
                 $qrBinary,
                 $originalName,
-                'organization-assets/wechat-miniprogram',
+                'organization-assets/wechat-scanner',
                 public: true,
                 mimeType: 'image/png',
                 extension: 'png',
@@ -114,7 +109,7 @@ final class GenerateWeChatOrganizationMiniProgramQr
     {
         $fingerprint = substr(sha1($scene.'|'.$page.'|'.$appId), 0, 10);
 
-        return sprintf('organization-%d-wechat-mp-qr-%s.png', $organizationId, $fingerprint);
+        return sprintf('organization-%d-wechat-scanner-qr-%s.png', $organizationId, $fingerprint);
     }
 
     private function findStoredFile(string $originalName): ?StoredFile
@@ -125,17 +120,5 @@ final class GenerateWeChatOrganizationMiniProgramQr
         );
 
         return $storedFile instanceof StoredFile ? $storedFile : null;
-    }
-
-    private function resolveSmartShanghaiConfig(): ?SmartShanghaiConnectionConfig
-    {
-        foreach ($this->integrationConnectionRepository->findEnabledByProvider(SmartShanghaiProviderKey::KEY) as $connection) {
-            $config = SmartShanghaiConnectionConfig::fromConnection($connection);
-            if ($config->isConfigured()) {
-                return $config;
-            }
-        }
-
-        return null;
     }
 }
