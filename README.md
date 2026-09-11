@@ -17,7 +17,9 @@ Package name:
 - WeChat Scanner sales channel publisher (`wechat_scanner`) — generates scanner Mini Program QR codes when an event is published
 - WeChat Mini Program QR codes on discount campaigns (admin campaign form)
 - WeChat Mini Program QR codes on event affiliates (admin event → Affiliates)
+- WeChat Mini Program QR codes on organizations (admin organization form) — join QR for `pages/org/org`
 - SmartShanghai event listing sync on publish — links SMSH listings via report access token and imports thumbnail
+- `POST /api/v1/me/organizations` — add the signed-in user to an organization (promoter / scanner membership)
 
 ## WeChat Scanner event QR codes
 
@@ -46,6 +48,16 @@ When an event affiliate is saved, the bridge generates a Mini Program QR and sho
 
 Generation failure is logged and does not block saving the affiliate.
 
+## WeChat organization Mini Program QR codes
+
+When an organization is opened in admin, the bridge generates a Mini Program QR and shows it on the organization form (below the details form). Scanning it opens the MiniProgram join page so a signed-in user can be added to that organization via `POST /api/v1/me/organizations`.
+
+- **Credentials:** same consumer WeChat MiniProgram as campaign QRs (WeChat Pay by default).
+- **Page:** `pages/org/org`.
+- **Scene:** `id={organizationId}` (e.g. `id=14`).
+
+Generation failure is logged and does not hide the rest of the organization form.
+
 ## SmartShanghai event listing sync
 
 When an event is published, the bridge:
@@ -55,6 +67,28 @@ When an event is published, the bridge:
 3. Downloads `data.thumbnail_path` from the response and sets it as the event thumbnail (admin → Media).
 
 Requires an enabled SmartShanghai integration with `api_base_url` and `api_token`. Optional setting **Event bridge API path** (default `/api2/admin/smtk-event-bridge/{event_id}`).
+
+## Join the signed-in user to an organization
+
+SmartShanghai promoter and scanner clients can add the current JWT user to an organization:
+
+```http
+POST /api/v1/me/organizations
+Authorization: Bearer <access-token>
+Content-Type: application/json
+
+{"organizationId": 12}
+```
+
+Send one of `organizationId` / `organization_id`, `slug`, or `code`. The call is idempotent: a user who is already a member gets `200` with `alreadyMember: true`; a new membership returns `201`. Inactive or unknown organizations return `404` with `organization_not_found`. API keys cannot call this endpoint — it requires a signed-in user (`ROLE_USER`).
+
+The host app must import the bundle routes (once per installation):
+
+```yaml
+# config/routes/smsh_ticketing_bridge.yaml
+smsh_ticketing_bridge:
+    resource: '@SmshTicketingBridgeBundle/config/routes.yaml'
+```
 
 ## Expected SmartShanghai Flow
 

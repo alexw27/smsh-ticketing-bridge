@@ -1,0 +1,50 @@
+{% trans_default_domain 'smsh_ticketing_bridge' %}
+
+<div class="card border-0 shadow-sm mb-3">
+    <div class="card-header d-block">
+        <h3 class="card-title mb-0">{{ 'wechat_organization_qr.card_title'|trans }}</h3>
+    </div>
+    <div class="card-body">
+        <p class="text-body-secondary small mb-3">
+            {{ 'wechat_organization_qr.card_intro'|trans }}
+        </p>
+
+        {% if wechat_organization_qr.status == 'ready' %}
+            <div class="d-flex flex-wrap align-items-start gap-3">
+                <a href="{{ wechat_organization_qr.imageUrl }}" target="_blank" rel="noopener noreferrer">
+                    <img
+                        src="{{ wechat_organization_qr.imageUrl }}"
+                        alt="{{ 'wechat_organization_qr.img_alt'|trans }}"
+                        class="rounded border bg-white"
+                        width="220"
+                        height="220"
+                        loading="lazy"
+                    >
+                </a>
+                <div class="small">
+                    <div class="fw-semibold mb-1">{{ 'wechat_organization_qr.scene_heading'|trans }}</div>
+                    <code class="text-break">{{ wechat_organization_qr.scene }}</code>
+                    <div class="fw-semibold mt-3 mb-1">{{ 'wechat_organization_qr.page_heading'|trans }}</div>
+                    <code class="text-break">{{ wechat_organization_qr.page }}</code>
+                    <div class="mt-3">
+                        <a href="{{ wechat_organization_qr.imageUrl }}" target="_blank" rel="noopener noreferrer">
+                            {{ 'wechat_organization_qr.open_image'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% elseif wechat_organization_qr.status == 'not_configured' %}
+            <p class="text-body-secondary mb-0">
+                {% if wechat_organization_qr.reason == 'credentials' %}
+                    {{ 'wechat_organization_qr.not_configured_credentials'|trans }}
+                {% else %}
+                    {{ 'wechat_organization_qr.not_configured'|trans }}
+                {% endif %}
+            </p>
+        {% else %}
+            <p class="text-danger mb-0">
+                {{ 'wechat_organization_qr.failed'|trans({'%message%': wechat_organization_qr.errorMessage|default('')}) }}
+            </p>
+        {% endif %}
+    </div>
+</div>
