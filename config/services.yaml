@@ -15,4 +15,8 @@ services:
     Smsh\TicketingBridge\Api\OrganizationLookup:
         alias: Smsh\TicketingBridge\Api\DoctrineOrganizationLookup
 
+    Smsh\TicketingBridge\Campaign\WeChatEventAffiliatePromoterPayloadExtension:
+        tags:
+            - { name: app.ticketing.promoter_affiliate_payload_extension }
+
     # Consumer MiniProgram QRs use WeChat Pay credentials unless a WeChat integration slug is set.
