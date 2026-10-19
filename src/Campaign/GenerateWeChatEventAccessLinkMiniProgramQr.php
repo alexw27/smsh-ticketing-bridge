@@ -19,7 +19,7 @@ use Smsh\TicketingBridge\SmartShanghaiProviderKey;
 
 final class GenerateWeChatEventAccessLinkMiniProgramQr
 {
-    public const DEFAULT_PAGE = 'pages/event/event';
+    public const DEFAULT_PAGE = 'pages/ticketingSchedule/ticketingSchedule';
 
     public function __construct(
         private readonly IntegrationConnectionRepository $integrationConnectionRepository,
@@ -103,7 +103,7 @@ final class GenerateWeChatEventAccessLinkMiniProgramQr
 
     private function resolvePage(?SmartShanghaiConnectionConfig $smsConfig): string
     {
-        $configured = $smsConfig?->miniprogramEventPage ?? '';
+        $configured = ltrim($smsConfig?->miniprogramEventPage ?? '', '/');
         if ($configured !== '') {
             return $configured;
         }

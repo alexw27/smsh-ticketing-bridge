@@ -26,7 +26,7 @@ wechat_event_affiliate_qr:
 
 wechat_event_access_link_qr:
   card_title: "WeChat Mini Program QR"
-  card_intro: "Scan this QR in WeChat to open the SmartShanghai Mini Program event page with this access link. Scene is id={eventId},access={slug} (comma-separated; WeChat rejects &). Default page is pages/event/event."
+  card_intro: "Scan this QR in WeChat to open the SmartShanghai Mini Program schedule page with this access link. Scene is id={eventId},access={slug} (comma-separated; WeChat rejects &). Default page is pages/ticketingSchedule/ticketingSchedule."
   img_alt: "WeChat Mini Program QR code for this access link"
   scene_heading: "Scene"
   page_heading: "Mini Program page"

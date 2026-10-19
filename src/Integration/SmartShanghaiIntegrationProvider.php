@@ -79,7 +79,7 @@ final class SmartShanghaiIntegrationProvider implements IntegrationProviderInter
                 type: 'text',
                 section: 'settings',
                 required: false,
-                helpText: 'Optional. Used for access-link QRs (default pages/event/event when empty). Unused for campaign and event-affiliate QRs; those always open pages/smtkEvent/smtkEvent.',
+                helpText: 'Optional. Used for access-link QRs (default pages/ticketingSchedule/ticketingSchedule when empty). Unused for campaign and event-affiliate QRs; those always open pages/smtkEvent/smtkEvent.',
             ),
             new IntegrationConfigField(
                 key: 'miniprogram_wechat_connection_slug',
