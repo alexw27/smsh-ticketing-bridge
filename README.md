@@ -17,6 +17,7 @@ Package name:
 - WeChat Scanner sales channel publisher (`wechat_scanner`) — generates scanner Mini Program QR codes when an event is published
 - WeChat Mini Program QR codes on discount campaigns (admin campaign form)
 - WeChat Mini Program QR codes on event affiliates (admin event → Affiliates, and `GET /api/v1/promoter/affiliates/...`)
+- WeChat Mini Program QR codes on event access links (admin event → Access links) — consumer MiniProgram `pages/event/event` with `access` scene
 - WeChat Mini Program QR codes on organizations (admin organization form) — join QR for `pages/org/org` on the scanner MiniProgram (`wechat-scanner`)
 - SmartShanghai event listing sync on publish — links SMSH listings via report access token and imports thumbnail
 - `POST /api/v1/me/organizations` — add the signed-in user to an organization (promoter / scanner membership)
@@ -47,6 +48,16 @@ When an event affiliate is saved, the bridge generates a Mini Program QR and sho
 - **Scene:** `id={eventId},ea={affiliateId}` (e.g. `id=5753,ea=14`). WeChat `getwxacodeunlimit` rejects `&` in scene, so pairs are comma-separated. MiniProgram checkout sends `ea` as `event_affiliate_id`.
 
 Generation failure is logged and does not block saving the affiliate.
+
+## WeChat event access-link Mini Program QR codes
+
+When an event access link is saved, the bridge generates a Mini Program QR and shows it on the access-link admin edit form. This opens the **SmartShanghai consumer MiniProgram** (not the door scanner).
+
+- **Credentials:** same consumer WeChat MiniProgram as campaign/affiliate QRs (WeChat Pay by default, e.g. App ID `wx7242d750b44505ed`).
+- **Page:** SmartShanghai `miniprogram_event_page` when set, otherwise `pages/event/event`.
+- **Scene:** `id={eventId},access={slug}` (e.g. `id=5952,access=vip`). WeChat `getwxacodeunlimit` rejects `&` and limits scene to **32 characters** — keep slugs short. The MiniProgram should load the event API with `?access={slug}`.
+
+Generation failure is logged and does not block saving the access link.
 
 ## WeChat organization Mini Program QR codes
 
@@ -118,8 +129,8 @@ Configure these under `System -> API / Integrations -> SmartShanghai`:
 - `api_base_url`: SmartShanghai API base URL.
 - `api_token`: partner API key sent as the `key` query parameter on every SmartShanghai API call.
 - `verify_user_path`: optional path, defaults to `/api2/ticketing/users/{user_id}`.
-- `miniprogram_event_page`: unused for campaign and event-affiliate QRs (those always use `pages/smtkEvent/smtkEvent`).
-- `miniprogram_wechat_connection_slug`: optional WeChat integration slug for campaign/affiliate QRs. Empty uses WeChat Pay MiniProgram credentials.
+- `miniprogram_event_page`: used for access-link QRs (default `pages/event/event` when empty). Unused for campaign and event-affiliate QRs (those always use `pages/smtkEvent/smtkEvent`).
+- `miniprogram_wechat_connection_slug`: optional WeChat integration slug for campaign/affiliate/access-link QRs. Empty uses WeChat Pay MiniProgram credentials.
 - `event_bridge_path`: optional path, defaults to `/api2/admin/smtk-event-bridge/{event_id}`.
 
 ## Verify User API Contract

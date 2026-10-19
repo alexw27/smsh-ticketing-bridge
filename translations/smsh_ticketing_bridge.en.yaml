@@ -24,6 +24,18 @@ wechat_event_affiliate_qr:
   not_configured_credentials: "Enable a WeChat MiniProgram integration or set MiniProgram App Secret on WeChat Pay (same as MiniProgram checkout). Do not use the wechat-scanner door MiniProgram unless affiliates should open that app."
   failed: "Could not generate the WeChat Mini Program QR: %message%"
 
+wechat_event_access_link_qr:
+  card_title: "WeChat Mini Program QR"
+  card_intro: "Scan this QR in WeChat to open the SmartShanghai Mini Program event page with this access link. Scene is id={eventId},access={slug} (comma-separated; WeChat rejects &). Default page is pages/event/event."
+  img_alt: "WeChat Mini Program QR code for this access link"
+  scene_heading: "Scene"
+  page_heading: "Mini Program page"
+  open_image: "Open image"
+  not_configured: "WeChat access-link QR codes are not configured. Save the access link first, and configure WeChat Pay MiniProgram credentials (or a WeChat MiniProgram integration)."
+  not_configured_credentials: "Enable a WeChat MiniProgram integration or set MiniProgram App Secret on WeChat Pay (same as MiniProgram checkout). Do not use the wechat-scanner door MiniProgram — access links open the SmartShanghai consumer MiniProgram."
+  not_configured_scene: "The WeChat QR scene must be at most 32 characters (id={eventId},access={slug}). Shorten the access-link slug and save again."
+  failed: "Could not generate the WeChat Mini Program QR: %message%"
+
 wechat_organization_qr:
   card_title: "WeChat Mini Program QR"
   card_intro: "Scan this QR in WeChat to open pages/org/org and join this organization. Scene is id={organizationId}."
