@@ -21,6 +21,7 @@ Package name:
 - WeChat Mini Program QR codes on organizations (admin organization form) — join QR for `pages/org/org` on the scanner MiniProgram (`wechat-scanner`)
 - SmartShanghai event listing sync on publish — links SMSH listings via report access token and imports thumbnail
 - `POST /api/v1/me/organizations` — add the signed-in user to an organization (promoter / scanner membership)
+- `POST /api/v1/auth/external/wechat-market/phone` — exchange a WeChat `getPhoneNumber` code for the signed-in user's verified phone
 
 ## WeChat Scanner event QR codes
 
@@ -92,6 +93,22 @@ Content-Type: application/json
 ```
 
 Send one of `organizationId` / `organization_id`, `slug`, or `code`. The call is idempotent: a user who is already a member gets `200` with `alreadyMember: true`; a new membership returns `201`. Inactive or unknown organizations return `404` with `organization_not_found`. API keys cannot call this endpoint — it requires a signed-in user (`ROLE_USER`).
+
+## WeChat Market phone number
+
+SmartShanghai MiniProgram clients can send the `getPhoneNumber` dynamic token after the user agrees:
+
+```http
+POST /api/v1/auth/external/wechat-market/phone
+Authorization: Bearer <access-token>
+Content-Type: application/json
+
+{"code":"<getPhoneNumber code>","access_token":"<optional wechat miniprogram token>"}
+```
+
+`code` is required (5-minute, single-use WeChat token — not the `wx.login()` code). `access_token` is the MiniProgram client-credential token used by `phonenumber.getPhoneNumber`. When omitted, the bridge fetches one from the enabled WeChat integration with slug `wechat-market`.
+
+On success the user's `phone` is replaced with WeChat's verified number and `phoneVerifiedAt` is stamped. An `auth.phone_verified` audit event is written.
 
 The host app must import the bundle routes (once per installation):
 

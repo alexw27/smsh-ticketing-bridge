@@ -10,7 +10,10 @@ services:
             - '../src/SmshTicketingBridgeBundle.php'
             - '../src/Api/JoinOrganizationApiPayload.php'
             - '../src/Api/JoinOrganizationResult.php'
+            - '../src/Api/WeChatMarketPhoneApiPayload.php'
             - '../src/Organization/OrganizationWeChatQrPanelView.php'
+            - '../src/WeChat/WeChatPhoneNumber.php'
+            - '../src/WeChat/WeChatPhoneNumberExchangeException.php'
 
     Smsh\TicketingBridge\Api\OrganizationLookup:
         alias: Smsh\TicketingBridge\Api\DoctrineOrganizationLookup
