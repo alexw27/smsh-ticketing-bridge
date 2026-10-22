@@ -14,6 +14,7 @@ services:
             - '../src/Organization/OrganizationWeChatQrPanelView.php'
             - '../src/WeChat/WeChatPhoneNumber.php'
             - '../src/WeChat/WeChatPhoneNumberExchangeException.php'
+            - '../src/SmartShanghai/SmartShanghaiTicketingCancellationException.php'
 
     Smsh\TicketingBridge\Api\OrganizationLookup:
         alias: Smsh\TicketingBridge\Api\DoctrineOrganizationLookup

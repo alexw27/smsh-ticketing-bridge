@@ -80,6 +80,26 @@ When an event is published, the bridge:
 
 Requires an enabled SmartShanghai integration with `api_base_url` and `api_token`. Optional setting **Event bridge API path** (default `/api2/admin/smtk-event-bridge/{event_id}`).
 
+## Buyer refund cancellation message
+
+When an admin refund succeeds and **Notify buyer** is checked (single-order refund or event refund batch), the bridge also tells SmartShanghai to message that buyer.
+
+The call runs only when the order's user has a SmartShanghai external identity. The `{user_id}` is that identity's provider user id, not the ticketing user id. Guest orders and buyers without a SmartShanghai login are skipped. A failed call is logged and does not fail the refund.
+
+```http
+POST {api_base_url}/api2/messages/{user_id}/sendTicketingCancellation?key={api_token}
+Content-Type: application/json
+
+{
+  "message": "Reason shown to buyers",
+  "orderNumber": "A-100",
+  "orderUrl": "https://api.smartticket.cn/orders/access/…",
+  "orderId": 1126264
+}
+```
+
+`message` is the refund reason note. `orderId` is the ticketing order id. `orderUrl` is the public order portal URL. The attempt is stored in `log_outbound_message` with channel `smartshanghai`.
+
 ## Join the signed-in user to an organization
 
 SmartShanghai promoter and scanner clients can add the current JWT user to an organization:
