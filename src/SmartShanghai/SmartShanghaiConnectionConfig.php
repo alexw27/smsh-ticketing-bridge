@@ -16,12 +16,14 @@ final readonly class SmartShanghaiConnectionConfig
         public string $miniprogramEventPage = '',
         public string $eventBridgePath = '/api2/admin/smtk-event-bridge/{event_id}',
         public string $miniprogramWechatConnectionSlug = '',
+        public string $emailMatchPath = '/api2/ticketing/users/{user_id}/email-matches',
     ) {
     }
 
     public static function fromConnection(IntegrationConnection $connection): self
     {
         $config = array_merge($connection->getSettings(), $connection->getCredentials());
+        $emailMatchPath = trim((string) ($config['email_match_path'] ?? ''));
 
         return new self(
             loginUrl: trim((string) ($config['login_url'] ?? '')),
@@ -33,6 +35,7 @@ final readonly class SmartShanghaiConnectionConfig
             miniprogramWechatConnectionSlug: self::normalizeWechatConnectionSlug(
                 (string) ($config['miniprogram_wechat_connection_slug'] ?? ''),
             ),
+            emailMatchPath: $emailMatchPath !== '' ? $emailMatchPath : '/api2/ticketing/users/{user_id}/email-matches',
         );
     }
 

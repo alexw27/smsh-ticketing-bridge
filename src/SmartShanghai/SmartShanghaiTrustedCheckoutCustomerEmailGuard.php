@@ -12,20 +12,22 @@ use Psr\Log\LoggerInterface;
 use Smsh\TicketingBridge\SmartShanghaiProviderKey;
 
 /**
- * Re-checks a submitted checkout email against SmartShanghai's verify-user API
- * so a signed-in MiniProgram client cannot invent an arbitrary email on POST.
+ * Re-checks a submitted checkout email against SmartShanghai via a boolean
+ * email-match endpoint (API key only — no partner JWT required from clients).
  */
 final class SmartShanghaiTrustedCheckoutCustomerEmailGuard implements TrustedCheckoutCustomerEmailGuardInterface
 {
     public function __construct(
         private readonly IntegrationConnectionRepository $integrationConnectionRepository,
-        private readonly SmartShanghaiUserVerifier $userVerifier,
+        private readonly SmartShanghaiEmailMatchClient $emailMatchClient,
         private readonly LoggerInterface $logger,
     ) {
     }
 
-    public function validate(User $user, string $submittedEmail): ?array
+    public function validate(User $user, string $submittedEmail, ?string $providerAccessToken = null): ?array
     {
+        unset($providerAccessToken);
+
         $identity = $this->smartShanghaiIdentity($user);
         if ($identity === null) {
             return null;
@@ -51,9 +53,7 @@ final class SmartShanghaiTrustedCheckoutCustomerEmailGuard implements TrustedChe
         }
 
         try {
-            // Server-to-server: API key authenticates the partner; the ticketing
-            // JWT already proved which local user this is. Same endpoint as login.
-            $verified = $this->userVerifier->verify($config, $smartShanghaiUserId, null);
+            $matches = $this->emailMatchClient->matches($config, $smartShanghaiUserId, $submittedEmail);
         } catch (\Throwable $exception) {
             $this->logger->error('ticketing.smartshanghai_checkout_email.verify_failed', [
                 'user_id' => $user->getId(),
@@ -69,16 +69,7 @@ final class SmartShanghaiTrustedCheckoutCustomerEmailGuard implements TrustedChe
             ];
         }
 
-        $providerEmail = isset($verified['email']) ? mb_strtolower(trim($verified['email'])) : '';
-        if ($providerEmail === '') {
-            return [
-                'ok' => false,
-                'code' => 'customer_email_mismatch',
-                'message' => 'Your SmartShanghai account has no verified email. Add one there, then try again.',
-            ];
-        }
-
-        if ($providerEmail !== mb_strtolower(trim($submittedEmail))) {
+        if (!$matches) {
             return [
                 'ok' => false,
                 'code' => 'customer_email_mismatch',
@@ -88,7 +79,7 @@ final class SmartShanghaiTrustedCheckoutCustomerEmailGuard implements TrustedChe
 
         return [
             'ok' => true,
-            'email' => $providerEmail,
+            'email' => mb_strtolower(trim($submittedEmail)),
         ];
     }
 

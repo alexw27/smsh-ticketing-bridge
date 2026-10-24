@@ -71,7 +71,15 @@ final class SmartShanghaiIntegrationProvider implements IntegrationProviderInter
                 type: 'text',
                 section: 'settings',
                 required: false,
-                helpText: 'Optional. Defaults to /api2/ticketing/users/{user_id}. Used at login (with partner JWT) and again at checkout to confirm the submitted email (API key only).',
+                helpText: 'Optional. Defaults to /api2/ticketing/users/{user_id}. Used at login with the partner JWT + API key.',
+            ),
+            new IntegrationConfigField(
+                key: 'email_match_path',
+                label: 'Email match path',
+                type: 'text',
+                section: 'settings',
+                required: false,
+                helpText: 'Optional. Defaults to /api2/ticketing/users/{user_id}/email-matches. Checkout POSTs {email} with the API key and expects {match: true|false}.',
             ),
             new IntegrationConfigField(
                 key: 'miniprogram_event_page',

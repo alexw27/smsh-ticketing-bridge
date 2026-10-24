@@ -166,22 +166,24 @@ Configure these under `System -> API / Integrations -> SmartShanghai`:
 - `api_base_url`: SmartShanghai API base URL.
 - `api_token`: partner API key sent as the `key` query parameter on every SmartShanghai API call.
 - `verify_user_path`: optional path, defaults to `/api2/ticketing/users/{user_id}`.
+- `email_match_path`: optional path, defaults to `/api2/ticketing/users/{user_id}/email-matches`.
 - `miniprogram_event_page`: used for access-link QRs (default `pages/ticketingSchedule/ticketingSchedule` when empty). Unused for campaign and event-affiliate QRs (those always use `pages/smtkEvent/smtkEvent`).
 - `miniprogram_wechat_connection_slug`: optional WeChat integration slug for campaign/affiliate/access-link QRs. Empty uses WeChat Pay MiniProgram credentials.
 - `event_bridge_path`: optional path, defaults to `/api2/admin/smtk-event-bridge/{event_id}`.
 
-## Verify User API Contract
+## Verify User API Contract (login)
 
 The bridge calls:
 
 ```text
-GET {api_base_url}{verify_user_path}?jwt=<jwt>&key=<api_token>
+GET {api_base_url}{verify_user_path}?key=<api_token>
+Authorization: Bearer <smartshanghai-jwt>
 ```
 
 Example default URL:
 
 ```text
-GET https://smsh.solidsource.software/api2/ticketing/users/123?jwt=...&key=...
+GET https://smsh.solidsource.software/api2/ticketing/users/123?key=...
 ```
 
 Expected successful response:
@@ -196,3 +198,30 @@ Expected successful response:
 `email` is optional. The ticketing app can create a local user with only the linked external identity.
 
 Any non-2xx response or `"valid": false` rejects login.
+
+## Email match API Contract (checkout)
+
+When trusted checkout customer payload is enabled and a SmartShanghai-linked buyer submits `customer.email`, the bridge asks SmartShanghai whether that email belongs to the linked user. This uses the partner API key only (no client JWT) and returns a boolean — it must not expose the stored email.
+
+```text
+POST {api_base_url}{email_match_path}?key=<api_token>
+Content-Type: application/json
+
+{"email":"user@example.com"}
+```
+
+Example default URL:
+
+```text
+POST https://smsh.solidsource.software/api2/ticketing/users/123/email-matches?key=...
+```
+
+Expected successful response:
+
+```json
+{
+  "match": true
+}
+```
+
+`matches: true|false` is also accepted. Non-2xx or an unexpected payload fails checkout with `customer_email_verification_failed`. `match: false` fails with `customer_email_mismatch`.
