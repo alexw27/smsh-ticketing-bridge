@@ -71,7 +71,7 @@ final class SmartShanghaiIntegrationProvider implements IntegrationProviderInter
                 type: 'text',
                 section: 'settings',
                 required: false,
-                helpText: 'Optional. Defaults to /api2/ticketing/users/{user_id}. SmartShanghai validates the JWT.',
+                helpText: 'Optional. Defaults to /api2/ticketing/users/{user_id}. Used at login (with partner JWT) and again at checkout to confirm the submitted email (API key only).',
             ),
             new IntegrationConfigField(
                 key: 'miniprogram_event_page',

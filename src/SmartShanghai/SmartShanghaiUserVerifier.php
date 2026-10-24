@@ -16,18 +16,24 @@ final class SmartShanghaiUserVerifier
     /**
      * @return array{email?: string}
      */
-    public function verify(SmartShanghaiConnectionConfig $config, string $userId, string $jwt): array
+    public function verify(SmartShanghaiConnectionConfig $config, string $userId, ?string $jwt = null): array
     {
         $url = $this->buildVerifyUrl($config, $userId);
-        // Send the partner JWT in Authorization to avoid query-string encoding issues with long tokens.
+        $headers = [
+            'Accept' => 'application/json',
+        ];
+        // Login sends the partner JWT. Checkout re-checks use the partner API key only
+        // (same pattern as ticketing cancellation): the ticketing JWT already identifies the user.
+        $jwt = $jwt !== null ? trim($jwt) : '';
+        if ($jwt !== '') {
+            $headers['Authorization'] = 'Bearer ' . $jwt;
+        }
+
         $response = $this->httpClient->request('GET', $url, [
             'query' => [
                 'key' => $config->apiToken,
             ],
-            'headers' => [
-                'Authorization' => 'Bearer ' . $jwt,
-                'Accept' => 'application/json',
-            ],
+            'headers' => $headers,
         ]);
 
         $statusCode = $response->getStatusCode();
