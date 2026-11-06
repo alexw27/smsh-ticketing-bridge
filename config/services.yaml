@@ -14,7 +14,12 @@ services:
             - '../src/Organization/OrganizationWeChatQrPanelView.php'
             - '../src/WeChat/WeChatPhoneNumber.php'
             - '../src/WeChat/WeChatPhoneNumberExchangeException.php'
+            - '../src/WeChat/WeChatSubscribeMessageException.php'
             - '../src/SmartShanghai/SmartShanghaiTicketingCancellationException.php'
+
+    Smsh\TicketingBridge\WeChat\WeChatMiniProgramSubscribeMessageSender:
+        tags:
+            - { name: app.integration.wechat_subscribe_message_sender }
 
     Smsh\TicketingBridge\Api\OrganizationLookup:
         alias: Smsh\TicketingBridge\Api\DoctrineOrganizationLookup

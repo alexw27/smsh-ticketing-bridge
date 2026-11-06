@@ -22,6 +22,7 @@ Package name:
 - SmartShanghai event listing sync on publish — links SMSH listings via report access token and imports thumbnail
 - `POST /api/v1/me/organizations` — add the signed-in user to an organization (promoter / scanner membership)
 - `POST /api/v1/auth/external/wechat-market/phone` — exchange a WeChat `getPhoneNumber` code for the signed-in user's verified phone
+- WeChat Mini Program subscription messages for communication-flow notification type `wechat_subscribe`
 
 ## WeChat Scanner event QR codes
 
@@ -99,6 +100,18 @@ Content-Type: application/json
 ```
 
 `message` is the refund reason note. `orderId` is the ticketing order id. `orderUrl` is the public order portal URL. The attempt is stored in `log_outbound_message` with channel `smartshanghai`.
+
+## WeChat Mini Program subscription messages
+
+Communication-flow notification types with channel `wechat_subscribe` are sent by `WeChatMiniProgramSubscribeMessageSender`.
+
+The sender loads the Mini Program access token from the selected WeChat integration (default slug `wechat-market`) and calls:
+
+```http
+POST https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=ACCESS_TOKEN
+```
+
+`touser` is the buyer openid resolved by the host app (checkout payment metadata, then the WeChat external identity). The template ID and keyword values come from the notification type. The Mini Program must call `wx.requestSubscribeMessage` for that template before WeChat will deliver it. A rejected send is returned to the host as a failed outbound log and does not fail the rest of the communication flow.
 
 ## Join the signed-in user to an organization
 
