@@ -24,6 +24,11 @@ services:
     Smsh\TicketingBridge\Api\OrganizationLookup:
         alias: Smsh\TicketingBridge\Api\DoctrineOrganizationLookup
 
+    # Shared across PHP containers. cache.app is Redis in the ticketing app.
+    Smsh\TicketingBridge\SalesChannel\WeChatMiniProgramAccessToken:
+        arguments:
+            $cache: '@cache.app'
+
     Smsh\TicketingBridge\Campaign\WeChatEventAffiliatePromoterPayloadExtension:
         tags:
             - { name: app.ticketing.promoter_affiliate_payload_extension }

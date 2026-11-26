@@ -16,8 +16,14 @@ final class SendWeChatMiniProgramSubscribeMessageTest extends TestCase
     public function testPostsSubscribeMessageWithAClientCredentialToken(): void
     {
         $httpClient = new MockHttpClient(static function (string $method, string $url, array $options): MockResponse {
-            if (str_contains($url, '/cgi-bin/token')) {
-                self::assertSame('GET', $method);
+            if (str_contains($url, '/cgi-bin/stable_token')) {
+                self::assertSame('POST', $method);
+                self::assertStringNotContainsString('secret=', $url);
+                $tokenBody = json_decode((string) ($options['body'] ?? ''), true);
+                self::assertSame('client_credential', $tokenBody['grant_type'] ?? null);
+                self::assertSame('wx-app', $tokenBody['appid'] ?? null);
+                self::assertSame('secret', $tokenBody['secret'] ?? null);
+                self::assertFalse($tokenBody['force_refresh'] ?? true);
 
                 return new MockResponse('{"access_token":"token-1","expires_in":7200}');
             }
